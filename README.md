@@ -1,3 +1,10 @@
+## What the Fork?
+
+This fork is specifically for changes needed to support the [SAPC and APCA Contrast Tools](https://github.com/Myndex/SAPC-APCA). Unless you are doing something with APCA, then you probably want the master https://github.com/jaames/iro.js
+
+
+-----
+
 <h1 align="center"><a href="//iro.js.org" target="blank"><img height="340" src="https://raw.githubusercontent.com/jaames/iro.js/master/assets/screenshot.png"/><br/>iro.js</a></h1>
 
 <p align="center">
