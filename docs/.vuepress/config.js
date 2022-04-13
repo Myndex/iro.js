@@ -17,6 +17,7 @@ module.exports = {
     ['meta', { name: 'twitter:image', property: 'og:image', content: 'https://iro.js.org/assets/social.png' }],
     ['meta', { name: 'twitter:image:width', property: 'og:image:width', content: '800' }],
     ['meta', { name: 'twitter:image:height', property: 'og:image:height', content: '400' }],
+    ['script', { async: true, defer: true, 'data-domain': 'iro.js.org', src: 'https://st2.jamesdaniel.dev/js/index.js' }],
   ],
   locales: {
     // The key is the path for the locale to be nested under.
@@ -74,10 +75,12 @@ module.exports = {
     },
     sidebarLinks: [
       ['https://github.com/jaames/iro.js', 'iro.js on GitHub'],
-      ['https://codepen.io/rakujira/pen/WZOeNq?editors=0010', 'Codepen Demo'],
-      ['https://github.com/jaames/iro.js/issues', 'Open an Issue / Feature Request'],
+      ['https://codepen.io/collection/XQgGRB', 'Codepen Examples'],
+      ['https://github.com/jaames/iro.js/discussions', 'Forum'],
+      ['https://github.com/jaames/iro.js/discussions/categories/feature-requests', 'Feature Requests'],
+      ['https://github.com/jaames/iro.js/issues', 'Issues'],
       ['https://github.com/sponsors/jaames', 'Become a Sponsor'],
-      ['https://twitter.com/rakujira', 'Follow me on Twitter'],
+      ['https://twitter.com/rakujira', 'Yell at me on Twitter'],
     ]
   },
   plugins: [
@@ -90,12 +93,6 @@ module.exports = {
           '/zh/': '提示'
         }
       },
-    ],
-    [
-      '@vuepress/plugin-google-analytics', 
-      {
-        'ga': 'UA-52026208-5'
-      }
     ]
   ],
   configureWebpack: {

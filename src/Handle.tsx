@@ -1,11 +1,11 @@
 import { h } from 'preact';
-import { resolveSvgUrl } from '@irojs/iro-core';
+import { resolveSvgUrl, cssValue } from '@irojs/iro-core';
 
 interface IroHandleProps {
   isActive: boolean;
   index: number;
-  x: number;
-  y: number;
+  x: number | string;
+  y: number | string;
   r: number;
   url: string;
   props: any;
@@ -15,13 +15,20 @@ interface IroHandleProps {
 export function IroHandle(props: IroHandleProps) {
   const radius = props.r;
   const url = props.url;
+  const cx = radius;
+  const cy = radius;
 
   return (
     <svg 
       className={`IroHandle IroHandle--${props.index} ${props.isActive ? 'IroHandle--isActive' : ''}`}
-      x={ props.x }
-      y={ props.y }
       style={{
+        transform: `translate(${ cssValue(props.x) }, ${ cssValue(props.y) })`,
+        willChange: 'transform',
+        top: cssValue(-radius),
+        left: cssValue(-radius),
+        width: cssValue(radius * 2),
+        height: cssValue(radius * 2),
+        position: 'absolute',
         overflow: 'visible'
       }}
     >
@@ -29,7 +36,9 @@ export function IroHandle(props: IroHandleProps) {
         <use xlinkHref={resolveSvgUrl(url)} { ...props.props }/>
       )}
       {!url && (
-        <circle 
+        <circle
+          cx={ cx }
+          cy={ cy }
           r={ radius }
           fill="none"
           stroke-width={ 2 }
@@ -38,6 +47,8 @@ export function IroHandle(props: IroHandleProps) {
       )}
       {!url && (
         <circle 
+          cx={ cx }
+          cy={ cy }
           r={ radius - 2 }
           fill={ props.fill } 
           stroke-width={ 2 }

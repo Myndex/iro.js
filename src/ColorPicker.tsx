@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { IroColor, IroColorValue, IroColorPickerOptions, iroColorPickerOptionDefaults } from '@irojs/iro-core';
 
-import { IroInputType } from './ComponentBase';
+import { IroInputType } from './ComponentTypes';
 import { IroWheel } from './Wheel';
 import { IroSlider } from './Slider';
 import { createWidget } from './createWidget';
@@ -139,7 +139,7 @@ export class IroColorPicker extends Component<ColorPickerProps, ColorPickerState
    * @desc Replace all of the current colorPicker colors
    * @param newColorValues list of new colors to add
    */
-  public setColors(newColorValues: IroColorValue[]) {
+  public setColors(newColorValues: IroColorValue[], activeColorIndex = 0) {
     // Unbind color events
     this.colors.forEach(color => color.unbind());
     // Destroy old colors
@@ -147,7 +147,7 @@ export class IroColorPicker extends Component<ColorPickerProps, ColorPickerState
     // Add new colors
     newColorValues.forEach(colorValue => this.addColor(colorValue));
     // Reset active color
-    this.setActiveColor(0);
+    this.setActiveColor(activeColorIndex);
     this.emit('color:setAll', this.colors);
   }
 
@@ -221,7 +221,7 @@ export class IroColorPicker extends Component<ColorPickerProps, ColorPickerState
   // Public utility methods
 
   public setOptions(newOptions: Partial<ColorPickerState>) {
-    this.setState({ ...this.state, ...newOptions });
+    this.setState(newOptions);
   }
 
   /**
@@ -229,7 +229,7 @@ export class IroColorPicker extends Component<ColorPickerProps, ColorPickerState
    * @param width - new width
    */
   public resize(width: number) {
-    this.setOptions({ width })
+    this.setOptions({ width });
   }
 
   /**
@@ -269,15 +269,15 @@ export class IroColorPicker extends Component<ColorPickerProps, ColorPickerState
    * @desc Handle input from a UI control element
    * @param type - event type
    */
-  private emitInputEvent(type: IroInputType) {
+  private emitInputEvent(type: IroInputType, originId: string) {
     if (type === IroInputType.Start) {
-      this.emit('input:start', this.color);
+      this.emit('input:start', this.color, originId);
     }
     else if (type === IroInputType.Move) {
-      this.emit('input:move', this.color);
+      this.emit('input:move', this.color, originId);
     }
     else if (type === IroInputType.End) {
-      this.emit('input:end', this.color);
+      this.emit('input:end', this.color, originId);
     }
   }
 
@@ -328,4 +328,4 @@ export class IroColorPicker extends Component<ColorPickerProps, ColorPickerState
   }
 }
 
-export const IroColorPickerWidget = createWidget(IroColorPicker);
+export const IroColorPickerWidget = createWidget<IroColorPicker, ColorPickerProps>(IroColorPicker);

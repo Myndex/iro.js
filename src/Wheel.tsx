@@ -1,19 +1,22 @@
 import { h } from 'preact';
 import { 
   IroColor,
-  resolveSvgUrl,
-  getSvgArcPath,
-  translateWheelAngle, 
+  cssGradient,
+  cssBorderStyles,
+  isInputInsideWheel,
   getWheelDimensions,
   getWheelHandlePosition,
   getWheelValueFromInput,
-  getHandleAtPoint
+  getHandleAtPoint,
+  cssValue
 } from '@irojs/iro-core';
 
-import { IroComponentBase, IroComponentProps, IroInputType } from './ComponentBase';
+import { IroComponentWrapper } from './ComponentWrapper';
+import { IroComponentProps, IroInputType } from './ComponentTypes';
 import { IroHandle } from './Handle';
 
-const HUE_STEPS = Array.apply(null, {length: 360}).map((_, index) => index);
+const HUE_GRADIENT_CLOCKWISE = 'conic-gradient(red, yellow, lime, aqua, blue, magenta, red)';
+const HUE_GRADIENT_ANTICLOCKWISE = 'conic-gradient(red, magenta, blue, aqua, lime, yellow, red)';
 
 interface IroWheelProps extends IroComponentProps {
   colors: IroColor[];
@@ -28,9 +31,24 @@ export function IroWheel(props: IroWheelProps) {
   const activeColor = props.color;
   const hsv = activeColor.hsv;
   const handlePositions = colors.map(color => getWheelHandlePosition(props, color));
+  const circleStyles = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    borderRadius: '50%',
+    boxSizing: 'border-box'
+  };
 
   function handleInput(x: number, y: number, inputType: IroInputType) {
     if (inputType === IroInputType.Start) {
+      // input hitbox is a square, 
+      // so we want to ignore any initial clicks outside the circular shape of the wheel
+      if (!isInputInsideWheel(props, x, y)) {
+        // returning false will cease all event handling for this interaction
+        return false;
+      }
       // getHandleAtPoint() returns the index for the handle if the point 'hits' it, or null otherwise
       const activeHandle = getHandleAtPoint(props, x, y, handlePositions);
       // If the input hit a handle, set it as the active handle, but don't update the color
@@ -41,7 +59,7 @@ export function IroWheel(props: IroWheelProps) {
       else {
         colorPicker.inputActive = true;
         activeColor.hsv = getWheelValueFromInput(props, x, y);
-        props.onInput(inputType);
+        props.onInput(inputType, props.id);
       }
     }
     // move is fired when the user has started dragging
@@ -50,60 +68,42 @@ export function IroWheel(props: IroWheelProps) {
       activeColor.hsv = getWheelValueFromInput(props, x, y);
     }
     // let the color picker fire input:start, input:move or input:end events
-    props.onInput(inputType);
+    props.onInput(inputType, props.id);
   }
 
   return (
-    <IroComponentBase {...props} onInput={ handleInput }>
+    <IroComponentWrapper {...props} onInput={ handleInput }>
       {(uid, rootProps, rootStyles) => (
-        <svg
+        <div
           { ...rootProps }
           className="IroWheel"
-          width={ width }
-          height={ width }
-          style={ rootStyles } 
+          style={{
+            width: cssValue(width),
+            height: cssValue(width),
+            position: 'relative',
+            ...rootStyles
+          }} 
         >
-         <defs>
-           <radialGradient id={ uid }>
-             <stop offset="0%" stop-color="#fff"/>
-             <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
-           </radialGradient>
-         </defs>
-         <g className="IroWheelHue" stroke-width={ radius } fill="none">
-           { HUE_STEPS.map(angle => (
-             <path 
-               key={ angle }
-               d={ getSvgArcPath(cx, cy, radius / 2, angle, angle + 1.5) } 
-               stroke={ `hsl(${translateWheelAngle(props, angle)}, 100%, 50%)` }
-             />
-           ))}
-         </g>
-         <circle 
-           className="IroWheelSaturation"
-           cx={ cx }
-           cy={ cy }
-           r={ radius }
-           fill={ `url(${resolveSvgUrl('#' + uid)})` }
-         />
-         { props.wheelLightness && (
-           <circle 
-             className="IroWheelLightness"
-             cx={ cx }
-             cy={ cy }
-             r={ radius }
-             fill="#000"
-             opacity={ 1 - hsv.v / 100 }
-           />
-         )}
-         <circle 
-           className="IroWheelBorder"
-           cx={ cx }
-           cy={ cy }
-           r={ radius }
-           fill="none"
-           stroke={ props.borderColor }
-           stroke-width={ borderWidth }
-         />
+          <div className="IroWheelHue" style={{
+            ...circleStyles,
+            transform: `rotateZ(${ props.wheelAngle + 90 }deg)`,
+            background: props.wheelDirection === 'clockwise' ? HUE_GRADIENT_CLOCKWISE : HUE_GRADIENT_ANTICLOCKWISE
+          }}/>
+          <div className="IroWheelSaturation" style={{
+            ...circleStyles,
+            background: 'radial-gradient(circle closest-side, #fff, transparent)',
+          }}/>
+          { props.wheelLightness && (
+            <div className="IroWheelLightness" style={{
+              ...circleStyles,
+              background: '#000',
+              opacity: 1 - hsv.v / 100
+            }}/>
+          )}
+          <div className="IroWheelBorder" style={{
+            ...circleStyles,
+            ...cssBorderStyles(props)
+          }}/>
          { colors.filter(color => color !== activeColor).map(color => (
            <IroHandle 
               isActive={ false }
@@ -120,14 +120,14 @@ export function IroWheel(props: IroWheelProps) {
             isActive={ true }
             index={ activeColor.index }
             fill={ activeColor.hslString }
-            r={ props.handleRadius }
+            r={ props.activeHandleRadius || props.handleRadius }
             url={ props.handleSvg }
             props={ props.handleProps }
             x={ handlePositions[activeColor.index].x }
             y={ handlePositions[activeColor.index].y }
           />
-       </svg>
+       </div>
       )}
-    </IroComponentBase>
+    </IroComponentWrapper>
   );
 }

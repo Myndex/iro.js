@@ -3,6 +3,7 @@ var colorPicker = new iro.ColorPicker("#demoWheel", {
   width: 290,
   height: 360,
   handleRadius: 8,
+  activeHandleRadius: 10,
   handleUrl: null,
   // handleUrl: "#test",
   handleOrigin: {y: 0, x: 0},
@@ -11,17 +12,81 @@ var colorPicker = new iro.ColorPicker("#demoWheel", {
     '#0f0',
     '#00f',
   ],
-  // borderWidth: 2,
+  borderWidth: 2,
+  borderColor: 'black',
   padding: 8,
   wheelLightness: true,
-  wheelAngle: 270,
-  wheelDirection: 'anticlockwise',
   layoutDirection: 'vertical',
   // transparency: true,
   layout: [
     {
       component: iro.ui.Wheel,
       options: {
+        wheelDirection: 'clockwise',
+        wheelAngle: 0,
+      }
+    },
+    {
+      component: iro.ui.Wheel,
+      options: {
+        wheelDirection: 'clockwise',
+        wheelAngle: 60,
+      }
+    },
+    {
+      component: iro.ui.Wheel,
+      options: {
+        wheelDirection: 'anticlockwise',
+        wheelAngle: 0,
+      }
+    },
+    {
+      component: iro.ui.Wheel,
+      options: {
+        wheelDirection: 'anticlockwise',
+        wheelAngle: 60,
+      }
+    },
+    {
+      component: iro.ui.Box,
+      options: {}
+    },
+    {
+      component: iro.ui.Slider,
+      options: {
+        sliderType: 'alpha'
+      }
+    },
+    {
+      component: iro.ui.Slider,
+      options: {
+        sliderType: 'hue'
+      }
+    },
+    {
+      component: iro.ui.Slider,
+      options: {
+        sliderType: 'saturation'
+      }
+    },
+    {
+      component: iro.ui.Slider,
+      options: {
+        sliderType: 'value'
+      }
+    },
+    {
+      component: iro.ui.Slider,
+      options: {
+        sliderType: 'kelvin',
+        sliderShape: 'circle'
+      }
+    },
+
+    {
+      component: iro.ui.Box,
+      options: {
+        boxHeight: 60
       }
     },
     {
@@ -42,62 +107,35 @@ var colorPicker = new iro.ColorPicker("#demoWheel", {
         sliderType: 'blue'
       }
     },
-    // {
-    //   component: iro.ui.Slider,
-    //   options: {
-    //     sliderType: 'value'
-    //   }
-    // },
-    // {
-    //   component: iro.ui.Slider,
-    //   options: {
-    //     sliderType: 'value',
-    //     activeIndex: 2,
-    //   }
-    // },
+    {
+      component: iro.ui.Slider,
+      options: {
+        sliderType: 'alpha',
+        layoutDirection: 'horizontal'
+      }
+    },
+    {
+      component: iro.ui.Slider,
+      options: {
+        sliderType: 'hue',
+        layoutDirection: 'horizontal'
+      }
+    },
+    {
+      component: iro.ui.Slider,
+      options: {
+        sliderType: 'saturation',
+        layoutDirection: 'horizontal'
+      }
+    },
+    {
+      component: iro.ui.Slider,
+      options: {
+        sliderType: 'value',
+        layoutDirection: 'horizontal'
+      }
+    },
   ]
-  // layout: [
-  //   {
-  //     component: iro.ui.Wheel,
-  //     options: {
-  //     }
-  //   },
-  //   {
-  //     component: iro.ui.Box,
-  //     options: {}
-  //   },
-  //   {
-  //     component: iro.ui.Slider,
-  //     options: {
-  //       sliderType: 'alpha'
-  //     }
-  //   },
-  //   {
-  //     component: iro.ui.Slider,
-  //     options: {
-  //       sliderType: 'hue'
-  //     }
-  //   },
-  //   {
-  //     component: iro.ui.Slider,
-  //     options: {
-  //       sliderType: 'saturation'
-  //     }
-  //   },
-  //   {
-  //     component: iro.ui.Slider,
-  //     options: {
-  //       sliderType: 'value'
-  //     }
-  //   },
-  //   {
-  //     component: iro.ui.Slider,
-  //     options: {
-  //       sliderType: 'kelvin',
-  //       sliderShape: 'circle'
-  //     }
-  //   },
-  // ]
 });
 
 // colorPicker.on('mount', function() {

@@ -29,5 +29,6 @@ export default ({
       iroLoadCallbacks.forEach(fn => fn(iro));
       console.log("Hey there! You can play around with iro.js from the developer console if you want to! It's globally available on window.iro :)");
     });
+    
   }
 }

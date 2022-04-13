@@ -1,15 +1,18 @@
 import { h } from 'preact';
 import {
   IroColor,
-  resolveSvgUrl,
   getBoxDimensions,
   getBoxGradients,
   getBoxValueFromInput,
   getBoxHandlePosition,
-  getHandleAtPoint
+  getHandleAtPoint,
+  cssBorderStyles,
+  cssGradient,
+  cssValue
 } from '@irojs/iro-core';
 
-import { IroComponentBase, IroComponentProps, IroInputType } from './ComponentBase';
+import { IroComponentWrapper } from './ComponentWrapper';
+import { IroComponentProps, IroInputType } from './ComponentTypes';
 import { IroHandle } from './Handle';
 
 interface IroBoxProps extends IroComponentProps {
@@ -38,7 +41,7 @@ export function IroBox(props: IroBoxProps) {
       else {
         colorPicker.inputActive = true;
         activeColor.hsv = getBoxValueFromInput(props, x, y);
-        props.onInput(inputType);
+        props.onInput(inputType, props.id);
       }
     }
     // move is fired when the user has started dragging
@@ -47,45 +50,34 @@ export function IroBox(props: IroBoxProps) {
       activeColor.hsv = getBoxValueFromInput(props, x, y);
     }
     // let the color picker fire input:start, input:move or input:end events
-    props.onInput(inputType);
+    props.onInput(inputType, props.id);
   }
 
   return (
-    <IroComponentBase {...props} onInput={ handleInput }>
+    <IroComponentWrapper {...props} onInput={ handleInput }>
       {(uid, rootProps, rootStyles) => (
-        <svg 
+        <div
           { ...rootProps }
           className="IroBox"
-          width={ width }
-          height={ height }
-          style= { rootStyles }
+          style={{ 
+            width: cssValue(width),
+            height: cssValue(height),
+            position: 'relative',
+            ...rootStyles
+          }}
         >
-          <defs>
-            <linearGradient id={ 's' + uid } x1="0%" y1="0%" x2="100%" y2="0%">
-              { gradients[0].map(([ offset, color ]) => (
-                <stop offset={`${ offset }%`} stop-color={ color } />
-              ))}
-            </linearGradient>
-            <linearGradient id={ 'l' + uid } x1="0%" y1="0%" x2="0%" y2="100%">
-              { gradients[1].map(([ offset, color ]) => (
-                <stop offset={`${ offset }%`} stop-color={ color } />
-              ))}
-            </linearGradient>
-            <pattern id={ 'f' + uid } width="100%" height="100%">
-              <rect x="0" y="0" width="100%" height="100%" fill={`url(${resolveSvgUrl( '#s' + uid )})`}></rect>
-              <rect x="0" y="0" width="100%" height="100%" fill={`url(${resolveSvgUrl( '#l' + uid )})`}></rect>
-            </pattern>
-          </defs>
-          <rect 
-            rx={ radius } 
-            ry={ radius } 
-            x={ props.borderWidth / 2 } 
-            y={ props.borderWidth / 2 } 
-            width={ width - props.borderWidth } 
-            height={ height - props.borderWidth }
-            stroke-width={ props.borderWidth }
-            stroke={ props.borderColor }
-            fill={ `url(${resolveSvgUrl('#f' + uid )})` }
+          <div
+            className="IroBox"
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: cssValue(radius),
+              ...cssBorderStyles(props),
+              background: 
+                cssGradient('linear', 'to bottom', gradients[1]) 
+                + ',' + 
+                cssGradient('linear', 'to right', gradients[0]),
+            }}
           />
           { colors.filter(color => color !== activeColor).map(color => (
            <IroHandle 
@@ -103,14 +95,14 @@ export function IroBox(props: IroBoxProps) {
             isActive={ true }
             index={ activeColor.index }
             fill={ activeColor.hslString }
-            r={ props.handleRadius }
+            r={ props.activeHandleRadius || props.handleRadius }
             url={ props.handleSvg }
             props={ props.handleProps }
             x={ handlePositions[activeColor.index].x }
             y={ handlePositions[activeColor.index].y }
           />
-        </svg>
+        </div>
       )}
-    </IroComponentBase>
+    </IroComponentWrapper>
   );
 }

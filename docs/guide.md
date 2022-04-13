@@ -83,12 +83,14 @@ var colorPicker = new iro.ColorPicker("#picker", {
 | `borderWidth`    | Width of the border around the controls. Set to `0` for no border. | `0` |
 | `borderColor`    | Color of the border. Any valid CSS color is supported. | `"#ffffff"` |
 | `handleRadius`   | Radius of the control handles. | `8` |
+| `activeHandleRadius` | Radius of the control handle for the currently selected color. | Inherits `handleRadius` |
 | `handleSvg`      | Custom handle SVG, used for [custom handles](/advanced.html#custom-handles). | `null` |
 | `handleProps`    | Custom handle properties, used for [custom handles](/advanced.html#custom-handles). | `{x:0, y:0}` |
 | `wheelLightness` | If set to `false`, the color wheel will not fade to black when the lightness decreases. | `true` |
 | `wheelAngle`     | Starting angle of the color wheel's hue gradient, measured in degrees. | `0` |
 | `wheelDirection` | Direction of the color wheel's hue gradient; either `"clockwise"` or `"anticlockwise"`. | `"anticlockwise"` |
 | `sliderSize`     | Slider control size. By default this will be calculated automatically. | `undefined` |
+| `boxHeight`     | Box control height. By default this will be the same as the `width`. | `undefined` |
 
 More details about color picker options, properties, and methods can be found on the [colorPicker API documentation](/colorPicker_api.html).
 

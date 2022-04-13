@@ -1,5 +1,56 @@
 ### Changelog
 
+#### 5.5.2
+
+##### Fixes
+
+- Fixed an issue where the alpha channel wasn't being copied over when creating a new iro.Color instance from the value of an old one (see https://github.com/jaames/iro.js/issues/193)
+- Fixed an issue where the iro.Color hslaString attribute wasn't returning a hsla string (see https://github.com/jaames/iro.js/issues/194)
+
+#### 5.5.1
+
+##### Fixes
+
+- Fixed an issue introduced in v5.4.0 where the color picker handles were glitching out on certain devices, causing the handle width/height to skew randomly as they moved around the wheel. Likely a browser bug, but it can be avoided. 
+
+As a bonus, this also should make UI interactions a little less choppy
+
+#### 5.5.0
+
+##### Additions
+
+- Added `activeHandleRadius` ColorPicker option for overriding the radius of active color handles. See https://github.com/jaames/iro.js/issues/166
+
+- Added `kelvin` object option for a Color's constructor and `set()` method. See https://github.com/jaames/iro.js/issues/149
+
+##### Additions
+
+- Fixed an issue where calling a ColorPicker's `resize()` or `setOptions()` methods directly after another state update (e.g `addColor`, `removeColor`, `setColors`, etc) would cause the color picker to lock up. See https://github.com/jaames/iro.js/issues/156.
+
+- Prevented ColorWheel events from being registered if they began inside the wheel's square hitbox, but not inside the circular boundaries of the wheel.
+
+#### 5.4.0
+
+Wow, thanks for 800 stars! I'm taking this milestone as a motivator to start working on iro.js again!
+
+This release just presents some internal refactoring around how iro.js draws its UI. Instead of SVG components are now comprised of regular HTML elements - aside from handles which will still be SVG for the foreseeable future.
+
+I'm hoping that this refactor will pave the way for making the library truly responsive in the near future. It should also make it a lot smoother and less resource-heavy overall, since we can now use conical gradients and all that nice CSS stuff instead of the hacky SVG equivalents.
+
+Watch this space! :)
+
+#### 5.3.2
+
+Adds optional second `activeColorIndex` param to `ColorPicker.setColors()` (https://github.com/jaames/iro.js/issues/162) and fixes IE11 event issue (https://github.com/jaames/iro.js/issues/163).
+
+#### 5.3.1
+
+Fixes https://github.com/jaames/iro.js/issues/145
+
+#### 5.3.0
+
+Added optional `boxHeight` option for setting the height of the box component. Added `id` option for all components, which will get passed to the `input:start`, `input:move` and `input:end` event callbacks as a second param (see https://github.com/jaames/iro.js/issues/140). Also mitigated an issue related to kelvin temperatures under 2000 (see https://github.com/jaames/iro.js/issues/138).
+
 #### 5.2.3
 
 Bumps iro-core version to fix server-side environment issues noted in https://github.com/jaames/iro.js/issues/131
